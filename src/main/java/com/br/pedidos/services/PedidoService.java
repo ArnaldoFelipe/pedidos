@@ -4,6 +4,7 @@ import com.br.pedidos.dto.pedido.PedidoRequest;
 import com.br.pedidos.dto.pedido.PedidoResponse;
 import com.br.pedidos.entities.Pedido;
 import com.br.pedidos.entities.Status;
+import com.br.pedidos.exception.pedido.PedidoNaoEncontradoException;
 import com.br.pedidos.mapper.pedido.PedidoMapper;
 import com.br.pedidos.repository.PedidoRepository;
 import lombok.AllArgsConstructor;
@@ -46,7 +47,7 @@ public class PedidoService {
 
     public PedidoResponse buscarPorId(UUID id){
         Pedido pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+                .orElseThrow(() -> new PedidoNaoEncontradoException("Pedido não encontrado"));
 
         return pedidoMapper.toResponse(pedido);
     }
@@ -59,7 +60,7 @@ public class PedidoService {
     @Transactional
     public void cancelarPedido(UUID id){
         Pedido pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+                .orElseThrow(() -> new PedidoNaoEncontradoException("Pedido não encontrado"));
 
         pedido.setStatusPedido(Status.CANCELADO);
         pedidoRepository.save(pedido);
@@ -68,7 +69,7 @@ public class PedidoService {
     @Transactional
     public void atualizarStatus(UUID id, Status status){
         Pedido pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+                .orElseThrow(() -> new PedidoNaoEncontradoException("Pedido não encontrado"));
 
         pedido.setStatusPedido(status);
         pedidoRepository.save(pedido);

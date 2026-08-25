@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,6 +26,6 @@ public class Pedido {
     private Status statusPedido;
 
     @OneToMany
-    private List<ItemPedido> itensPedido;
+    private List<ItemPedido> itensPedido = new ArrayList<>();
     private BigDecimal valorTotal;
 }
