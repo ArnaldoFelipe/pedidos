@@ -25,7 +25,7 @@ public class Pedido {
     private LocalDateTime dataPedido;
     private Status statusPedido;
 
-    @OneToMany
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPedido> itensPedido = new ArrayList<>();
     private BigDecimal valorTotal;
 }

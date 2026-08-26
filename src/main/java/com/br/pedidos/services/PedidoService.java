@@ -1,7 +1,9 @@
 package com.br.pedidos.services;
 
+import com.br.pedidos.clients.ProdutoClient;
 import com.br.pedidos.dto.pedido.PedidoRequest;
 import com.br.pedidos.dto.pedido.PedidoResponse;
+import com.br.pedidos.dto.produto.ProdutoResponse;
 import com.br.pedidos.entities.Pedido;
 import com.br.pedidos.entities.Status;
 import com.br.pedidos.exception.pedido.PedidoNaoEncontradoException;
@@ -23,8 +25,16 @@ public class PedidoService {
     private final PedidoRepository pedidoRepository;
     private final PedidoMapper pedidoMapper;
 
+    private final ProdutoClient produtoClient;
+
     private BigDecimal buscarPrecoOficial(UUID produtoId){
-        return new BigDecimal("100.00");
+        try{
+            ProdutoResponse produto = produtoClient.buscarProdutoPorId(produtoId);
+            return produto.preco();
+        }
+        catch (Exception ex){
+            throw new RuntimeException("Produto não encontrado no sistema de catalogo" + produtoId);
+        }
     }
 
     @Transactional
