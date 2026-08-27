@@ -30,7 +30,7 @@ public class PedidoService {
     private BigDecimal buscarPrecoOficial(UUID produtoId){
         try{
             ProdutoResponse produto = produtoClient.buscarProdutoPorId(produtoId);
-            return produto.preco();
+            return produto.valor();
         }
         catch (Exception ex){
             throw new RuntimeException("Produto não encontrado no sistema de catalogo" + produtoId);
@@ -47,6 +47,7 @@ public class PedidoService {
                 .map(item -> {
                     BigDecimal preco = buscarPrecoOficial(item.getProdutoId());
                     item.setValorUnitario(preco);
+                    produtoClient.baixarEstoque(item.getProdutoId(), item.getQuantidade());
                     return preco.multiply(BigDecimal.valueOf(item.getQuantidade()));
                 })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
