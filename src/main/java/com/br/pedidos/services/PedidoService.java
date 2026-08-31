@@ -4,6 +4,7 @@ import com.br.pedidos.clients.ProdutoClient;
 import com.br.pedidos.dto.pedido.PedidoRequest;
 import com.br.pedidos.dto.pedido.PedidoResponse;
 import com.br.pedidos.dto.produto.ProdutoResponse;
+import com.br.pedidos.entities.ItemPedido;
 import com.br.pedidos.entities.Pedido;
 import com.br.pedidos.entities.Status;
 import com.br.pedidos.exception.pedido.PedidoNaoEncontradoException;
@@ -43,15 +44,16 @@ public class PedidoService {
         pedido.setDataPedido(LocalDateTime.now());
         pedido.setStatusPedido(Status.PENDENTE);
 
-        BigDecimal total = pedido.getItensPedido().stream()
-                .map(item -> {
-                    BigDecimal preco = buscarPrecoOficial(item.getProdutoId());
-                    item.setValorUnitario(preco);
-                    produtoClient.baixarEstoque(item.getProdutoId(), item.getQuantidade());
-                    return preco.multiply(BigDecimal.valueOf(item.getQuantidade()));
-                })
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal total = BigDecimal.ZERO;
 
+        for(ItemPedido item: pedido.getItensPedido()){
+            BigDecimal preco = buscarPrecoOficial(item.getProdutoId());
+            item.setValorUnitario(preco);
+
+            produtoClient.baixarEstoque(item.getProdutoId(), item.getQuantidade());
+            BigDecimal subTotal = preco.multiply(BigDecimal.valueOf(item.getQuantidade()));
+            total = total.add(subTotal);
+        }
         pedido.setValorTotal(total);
         return pedidoMapper.toResponse(pedidoRepository.save(pedido));
     }
