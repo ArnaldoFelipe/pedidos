@@ -29,13 +29,8 @@ public class PedidoService {
     private final ProdutoClient produtoClient;
 
     private BigDecimal buscarPrecoOficial(UUID produtoId){
-        try{
-            ProdutoResponse produto = produtoClient.buscarProdutoPorId(produtoId);
-            return produto.valor();
-        }
-        catch (Exception ex){
-            throw new RuntimeException("Produto não encontrado no sistema de catalogo" + produtoId);
-        }
+        ProdutoResponse produto = produtoClient.buscarProdutoPorId(produtoId);
+        return produto.valor();
     }
 
     @Transactional
