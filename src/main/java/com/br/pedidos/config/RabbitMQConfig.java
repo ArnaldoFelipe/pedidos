@@ -15,22 +15,11 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
 
     public static final String EXCHANGE_NAME = "pedido.exchange";
-    public static final String QUEUE_BAIXA_ESTOQUE = "estoque.baixar.queue";
     public static final String ROUTING_KEY_BAIXA = "estoque.baixar.rk";
-
-    @Bean
-    public Queue filaBaixaEstoque(){
-        return new Queue(QUEUE_BAIXA_ESTOQUE, true);
-    }
 
     @Bean
     public DirectExchange exchange(){
         return new DirectExchange(EXCHANGE_NAME);
-    }
-
-    @Bean
-    public Binding bindingBaixaEstoque(Queue filaBaixaEstoque, DirectExchange exchange){
-        return BindingBuilder.bind(filaBaixaEstoque).to(exchange).with(ROUTING_KEY_BAIXA);
     }
 
     @Bean
