@@ -102,4 +102,13 @@ public class PedidoService {
         pedido.setStatusPedido(status);
         pedidoRepository.save(pedido);
     }
+
+    @Transactional
+    public void aprovarPedido(UUID pedidoId) {
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new PedidoNaoEncontradoException("Pedido não encontrado"));
+
+        pedido.setStatusPedido(Status.APROVADO);
+        pedidoRepository.save(pedido);
+    }
 }

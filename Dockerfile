@@ -1,11 +1,17 @@
-# Usa a imagem oficial do Java
-FROM eclipse-temurin:21-jdk-alpine
-
-# Cria uma pasta para a aplicação dentro do contêiner
+# ESTÁGIO 1: Build
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-# Copia o arquivo .jar gerado pelo Maven para dentro do contêiner
-COPY target/*.jar app.jar
+# ESTÁGIO 2: Execução
+FROM eclipse-temurin:21-jdk-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 
-# Comando que será executado quando o contêiner iniciar
+# Expõe a porta do Pedidos
+EXPOSE 8080
+
 ENTRYPOINT ["java", "-jar", "app.jar"]
