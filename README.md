@@ -376,6 +376,6 @@ Spring Boot
 
 # 👨‍💻 Autor
 
-Desenvolvido por **Felipe Silva**.
+Desenvolvido por **Arnaldo Felipe Da Silva**.
 
 > Projeto desenvolvido com foco em aprendizado e aplicação prática de arquitetura de microsserviços, mensageria e sistemas distribuídos.
